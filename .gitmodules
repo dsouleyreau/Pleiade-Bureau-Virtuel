@@ -1,0 +1,8 @@
+[submodule "web/themes/custom/pleiadebv"]
+	path = web/themes/custom/pleiadebv
+	url = git@github.com:e-Collectivites/pleiade-custom-theme.git
+	ignore = untracked
+[submodule "web/modules/custom"]
+	path = web/modules/custom
+	url = https://github.com/e-Collectivites/pleiade-custom-modules.git
+	ignore = untracked
