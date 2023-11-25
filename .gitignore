@@ -3,23 +3,23 @@
 # earlier versions of Drupal are tracked in `community/PHP/`
 
 # Ignore configuration files that may contain sensitive information
-/sites/*/*settings*.php
-/sites/*/*services*.yml
+/web/sites/*/*settings*.php
+/web/sites/*/*services*.yml
 
 # Ignore paths that may contain user-generated content
-/sites/*/files
-/sites/*/public
-/sites/*/private
-/sites/*/files-public
-/sites/*/files-private
+/web/sites/*/files
+/web/sites/*/public
+/web/sites/*/private
+/web/sites/*/files-public
+/web/sites/*/files-private
 
 # Ignore paths that may contain temporary files
-/sites/*/translations
-/sites/*/tmp
-/sites/*/cache
+/web/sites/*/translations
+/web/sites/*/tmp
+/web/sites/*/cache
 
 # Ignore testing related files
-/sites/simpletest
+/web/sites/simpletest
 
 # Ignore drupal core (if not versioning drupal sources)
 # /core
@@ -47,6 +47,16 @@
 # /robots.txt
 # /update.php
 # /web.config
+
+# installed PHP packages
+/vendor
+
+# other dependencies
+/web/themes/contrib
+/web/modules/contrib
+/web/core
+!/web/sites/default/files/.htaccess
+!/web/sites/default/files/php/twig/.htaccess
 
 # different environment configs
 /.env*

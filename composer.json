@@ -31,6 +31,7 @@
         "drupal/samlauth": "^3.8",
         "drupal/seckit": "^2.0",
         "drupal/username_enumeration_prevention": "^1.2",
+        "drush/drush": "^11",
         "kint-php/kint": "^4.2"
     },
     "conflict": {
