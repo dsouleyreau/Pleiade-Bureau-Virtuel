@@ -4,13 +4,11 @@ services:
   mysql:
     image: mysql:8.0
     container_name: mysql
-    command: --default-authentication-plugin=mysql_native_password
+    command: --default-authentication-plugin=caching_sha2_password # mysql_native_password is deprecated
     restart: unless-stopped
     env_file: .env
     volumes:
       - db-data:/var/lib/mysql
-      # uncomment to keep database on host (persist after container deletion)
-      # - mysql:/var/lib/mysql
     networks:
       - internal
 
