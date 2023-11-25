@@ -47,3 +47,12 @@
 # /robots.txt
 # /update.php
 # /web.config
+
+# different environment configs
+/.env*
+!/.env.example
+
+# self-signed certificate
+/server.crt
+/server.csr
+/server.key

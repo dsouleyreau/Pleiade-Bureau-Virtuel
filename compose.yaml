@@ -1,0 +1,101 @@
+version: "3"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - db-data:/var/lib/mysql
+      # uncomment to keep database on host (persist after container deletion)
+      # - mysql:/var/lib/mysql
+    networks:
+      - internal
+
+  drupal:
+    image: drupal:9.4.7-php8.1-fpm-alpine
+    container_name: drupal
+    depends_on:
+      - mysql
+    restart: unless-stopped
+    env_file: .env
+    networks:
+      - internal
+      - external
+    volumes:
+      - ./web/modules:/opt/drupal/web/modules
+      - ./web/profiles:/opt/drupal/web/profiles
+      - ./web/sites:/opt/drupal/web/sites
+      - ./web/themes:/opt/drupal/web/themes
+      - ./vendor:/opt/drupal/vendor
+      - ./composer.json:/opt/drupal/composer.json
+      - ./composer.lock:/opt/drupal/composer.lock
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        cd /opt/drupal/web
+        if [ ! -f sites/default/settings.php ]
+        then
+          cp sites/default/default.settings.php sites/default/settings.php
+          chown www-data:www-data -R sites/default/files sites/default/settings.php
+          apk add gmp-dev
+          docker-php-ext-install gmp
+          composer require drush/drush:^11
+          composer update -W
+        fi
+        exec php-fpm
+
+  webserver:
+    image: nginx:1.25.3-alpine
+    container_name: webserver
+    depends_on:
+      - drupal
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./web:/var/www/html
+      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
+      - ./server.crt:/etc/ssl/server.crt
+      - ./server.key:/etc/ssl/server.key
+    networks:
+      - external
+
+  # the following are optional
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: pma
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - 8081:80
+    environment:
+      PMA_HOST: mysql
+    env_file: .env
+    networks:
+      - internal
+      - external
+
+  mailer:
+    image: rnwood/smtp4dev
+    container_name: mail
+    ports:
+      - 3000:80
+    networks:
+      - internal
+      - external
+
+networks:
+  external:
+    driver: bridge
+  internal:
+    driver: bridge
+
+volumes:
+  db-data:
